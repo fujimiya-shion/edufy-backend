@@ -8,6 +8,8 @@ use App\Repositories\Contracts\Course\ICourseRepository;
 use App\Repositories\Contracts\Course\ICourseScheduleRepository;
 use App\Repositories\Contracts\Lesson\ILessonMediaRepository;
 use App\Repositories\Contracts\Lesson\ILessonRepository;
+use App\Repositories\Contracts\Ribbon\IRibbonItemRepository;
+use App\Repositories\Contracts\Ribbon\IRibbonRepository;
 use App\Repositories\Contracts\Role\IRoleRepository;
 use App\Repositories\Contracts\Teacher\ITeacherRepository;
 use App\Repositories\Contracts\TrainingCenter\ITrainingCenterRepository;
@@ -18,6 +20,8 @@ use App\Repositories\Implementations\Course\CourseRepository;
 use App\Repositories\Implementations\Course\CourseScheduleRepository;
 use App\Repositories\Implementations\Lesson\LessonMediaRepository;
 use App\Repositories\Implementations\Lesson\LessonRepository;
+use App\Repositories\Implementations\Ribbon\RibbonItemRepository;
+use App\Repositories\Implementations\Ribbon\RibbonRepository;
 use App\Repositories\Implementations\Role\RoleRepository;
 use App\Repositories\Implementations\Teacher\TeacherRepository;
 use App\Repositories\Implementations\TrainingCenter\TrainingCenterRepository;
@@ -29,6 +33,8 @@ use App\Services\Contracts\Course\ICourseScheduleService;
 use App\Services\Contracts\Course\ICourseService;
 use App\Services\Contracts\Lesson\ILessonMediaService;
 use App\Services\Contracts\Lesson\ILessonService;
+use App\Services\Contracts\Ribbon\IRibbonItemService;
+use App\Services\Contracts\Ribbon\IRibbonService;
 use App\Services\Contracts\Role\IRoleService;
 use App\Services\Contracts\Teacher\ITeacherService;
 use App\Services\Contracts\TrainingCenter\ITrainingCenterService;
@@ -39,6 +45,8 @@ use App\Services\Implementations\Course\CourseScheduleService;
 use App\Services\Implementations\Course\CourseService;
 use App\Services\Implementations\Lesson\LessonMediaService;
 use App\Services\Implementations\Lesson\LessonService;
+use App\Services\Implementations\Ribbon\RibbonItemService;
+use App\Services\Implementations\Ribbon\RibbonService;
 use App\Services\Implementations\Role\RoleService;
 use App\Services\Implementations\Teacher\TeacherService;
 use App\Services\Implementations\TrainingCenter\TrainingCenterService;
@@ -62,6 +70,8 @@ class CRUDServiceProvider extends ServiceProvider
         $this->app->bind(IRoleRepository::class, RoleRepository::class);
         $this->app->bind(ITeacherRepository::class, TeacherRepository::class);
         $this->app->bind(ITrainingCenterRepository::class, TrainingCenterRepository::class);
+        $this->app->bind(IRibbonRepository::class, RibbonRepository::class);
+        $this->app->bind(IRibbonItemRepository::class, RibbonItemRepository::class);
 
         // Services
         $this->app->bind(IAdminService::class, AdminService::class);
@@ -74,6 +84,8 @@ class CRUDServiceProvider extends ServiceProvider
         $this->app->bind(IRoleService::class, RoleService::class);
         $this->app->bind(ITeacherService::class, TeacherService::class);
         $this->app->bind(ITrainingCenterService::class, TrainingCenterService::class);
+        $this->app->bind(IRibbonService::class, RibbonService::class);
+        $this->app->bind(IRibbonItemService::class, RibbonItemService::class);
     }
 
     /**

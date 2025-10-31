@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Services\Contracts\IService;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\DeleteBulkAction;
 
@@ -10,6 +11,7 @@ abstract class BaseResource extends Resource
     protected static string $permissionPrefix = '';
 
     protected static bool $shouldRegisterNavigation = true;
+    protected static string $serviceContract;
 
     protected static array $actionPermissions = [
         'viewAny' => 'read',
@@ -17,6 +19,11 @@ abstract class BaseResource extends Resource
         'edit' => 'update',
         'delete' => 'delete',
     ];
+
+    public static function getService(): IService
+    {
+        return app(static::$serviceContract);
+    }
 
     protected static function hasPermission(string $action): bool
     {
