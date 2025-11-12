@@ -2,48 +2,29 @@
 
 namespace App\Http\Controllers\Api\V1\Payment;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\ApiController;
+use App\Services\Contracts\Payment\IPaymentLogService;
+use App\Traits\CrudBehaviour;
 use Illuminate\Http\Request;
 
-class PaymentLogController extends Controller
+class PaymentLogController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    use CrudBehaviour;
+
+    protected IPaymentLogService $service;
+
+    public function __construct(IPaymentLogService $service)
     {
-        //
+        $this->service = $service;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function index(Request $request)
     {
-        //
+        return $this->_index($request, $this->service);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return $this->_show($id, $this->service);
     }
 }
