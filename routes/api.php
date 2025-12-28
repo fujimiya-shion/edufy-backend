@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\Course\CourseMediaController;
 use App\Http\Controllers\Api\V1\Course\CourseScheduleController;
 use App\Http\Controllers\Api\V1\Lesson\LessonController;
 use App\Http\Controllers\Api\V1\Lesson\LessonMediaController;
+use App\Http\Controllers\Api\V1\Ribbon\RibbonController;
 use App\Http\Controllers\Api\V1\Teacher\TeacherController;
 use App\Http\Controllers\Api\V1\TrainingCenter\TrainingCenterController;
 use App\Http\Controllers\Api\V1\Cart\CartController;
@@ -16,6 +17,13 @@ use App\Http\Controllers\Api\V1\Payment\PaymentLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/api/v1')->group(function () {
+
+    Route::controller(RibbonController::class)
+        ->prefix('/ribbons')
+        ->group(function () {
+            Route::get('/', 'index');
+        });
+
     Route::apiResource('/courses', CourseController::class)
         ->names('course')
         ->except(['create', 'edit']);
