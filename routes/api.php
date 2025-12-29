@@ -108,4 +108,19 @@ Route::prefix('/api/v1')->middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('/payment-logs', PaymentLogController::class)
         ->names('payment-logs')
         ->only(['index', 'show']);
+
+    Route::prefix('/auth/user')->group(function () {
+        Route::post('/register', [UserAuthController::class, 'register']);
+        Route::post('/login', [UserAuthController::class, 'login']);
+        Route::post('/forgot-password', [UserAuthController::class, 'forgotPassword']);
+        Route::post('/reset-password', [UserAuthController::class, 'resetPassword']);
+        Route::post('/email-exist', [UserAuthController::class, 'emailExist']);
+        Route::post('/phone-exist', [UserAuthController::class, 'phoneExist']);
+        Route::post('/role', [UserAuthController::class, 'role']);
+
+        // Socials
+        Route::post('/google', [UserAuthController::class, 'google']);
+
+        Route::middleware('auth:user')->get('/me', [UserAuthController::class, 'me']);
+    });
 });
