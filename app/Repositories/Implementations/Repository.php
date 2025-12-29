@@ -95,13 +95,13 @@ abstract class Repository implements IRepository
      *
      * If the repository implements ShouldCache, it will cache the result for the same id.
      *
-     * @param int $id
+     * @param mixed $id
      *      The id of the record to retrieve.
      *
      * @return \Illuminate\Database\Eloquent\Model|null
      *      The retrieved record, or null if not found.
      */
-    public function getById(int $id)
+    public function getById(mixed $id)
     {
         $eventInstance = app()->make(GetModelById::class, [
             'model' => $this->model,
@@ -200,7 +200,7 @@ abstract class Repository implements IRepository
     /**
      * Updates an existing record in the database.
      *
-     * @param int $id
+     * @param mixed $id
      *      The ID of the record to update.
      *
      * @param array $data
@@ -210,7 +210,7 @@ abstract class Repository implements IRepository
      * @return \Illuminate\Database\Eloquent\Model|null
      *      The updated record, or null if the record does not exist.
      */
-    public function update(int $id, array $data)
+    public function update(mixed $id, array $data)
     {
         $model = $this->model->find($id);
         if ($model) {
@@ -220,7 +220,7 @@ abstract class Repository implements IRepository
                 $eventInstance = app()->make(ModelUpdated::class, ['model' => $model, 'data' => $this->model->find($id)]);
                 event($eventInstance);
             }
-            return $updated;
+            return $this->getById($id);
         }
         return null;
     }
@@ -250,7 +250,7 @@ abstract class Repository implements IRepository
      *
      * If the $softDelete parameter is true, the record will be soft deleted. Otherwise, it will be permanently deleted.
      *
-     * @param int $id
+     * @param mixed $id
      *      The ID of the record to delete.
      *
      * @param bool $softDelete
@@ -260,7 +260,7 @@ abstract class Repository implements IRepository
      * @return bool
      *      True if the record was deleted, false otherwise.
      */
-    public function delete(int $id, bool $softDelete = true)
+    public function delete(mixed $id, bool $softDelete = true)
     {
         $model = $this->model->find($id);
         if (!$model) {

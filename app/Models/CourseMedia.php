@@ -33,7 +33,7 @@ class CourseMedia extends Model
     ];
 
     protected $casts = [
-        'status' => MediaStatus::class,
+        // 'status' => MediaStatus::class,
         'renditions' => 'array',
         'thumbnails' => 'array',
         'meta' => 'array',
@@ -48,4 +48,25 @@ class CourseMedia extends Model
     {
         return $this->hasMany(LessonMedia::class);
     }
+
+    public static function boot() {
+        parent::boot();
+
+        static::creating(function (CourseMedia $model) {
+            $model->status = MediaStatus::Processing;
+        });
+
+        static::updating(function (CourseMedia $model) {
+            $model->status = MediaStatus::Processing;
+        });
+
+        static::created(function (CourseMedia $model) {
+            $model->status = MediaStatus::Uploaded;
+        });
+
+        static::updated(function (CourseMedia $model) {
+            $model->status = MediaStatus::Uploaded;
+        });
+    }
 }
+

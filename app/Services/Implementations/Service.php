@@ -12,7 +12,7 @@ abstract class Service implements IService {
     public function getAll(array $options = []) {
         return $this->repository->getAll($options);
     }
-    public function getById(int $id) {
+    public function getById(mixed $id) {
         return $this->repository->getById($id);
     }
 
@@ -22,13 +22,13 @@ abstract class Service implements IService {
     public function create(array $data) {
         return $this->repository->create($data);
     }
-    public function update(int $id, array $data) {
+    public function update(mixed $id, array $data) {
         return $this->repository->update($id, $data);
     }
     public function createOrUpdate(array $criteria, array $data) {
         return $this->repository->createOrUpdate($criteria, $data);
     }
-    public function delete(int $id) {
+    public function delete(mixed $id) {
         return $this->repository->delete($id);
     }
 

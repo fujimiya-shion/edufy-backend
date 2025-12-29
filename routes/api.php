@@ -24,9 +24,14 @@ Route::prefix('/api/v1')->group(function () {
             Route::get('/', 'index');
         });
 
-    Route::apiResource('/courses', CourseController::class)
-        ->names('course')
-        ->except(['create', 'edit']);
+    Route::controller(CourseController::class)
+        ->prefix('/courses')
+        ->group(function () {
+            Route::get('/filter', 'filter');
+            
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+        });
     
     Route::apiResource('/course-schedules', CourseScheduleController::class)
         ->names('course-schedules')

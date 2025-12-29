@@ -9,6 +9,7 @@ use App\Models\Course;
 use App\Services\Contracts\Course\ICourseService;
 use Filament\Forms;
 use Filament\Tables;
+use Illuminate\Database\Eloquent\Builder;
 
 class CourseResource extends BaseResource
 {
@@ -18,6 +19,11 @@ class CourseResource extends BaseResource
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
     protected static ?string $navigationGroup = 'Courses';
     protected static ?int $navigationSort = 1;
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['media', 'schedules']);
+    }
 
     public static function form(Forms\Form $form): Forms\Form
     {
@@ -34,12 +40,16 @@ class CourseResource extends BaseResource
             Forms\Components\RichEditor::make('description')->columnSpanFull(),
 
             Forms\Components\Select::make('level')
-                ->options(collect(CourseLevel::cases())->mapWithKeys(fn ($c) => [$c->value => $c->name])->toArray())
-                ->required(),
+                ->options(collect(CourseLevel::cases())->mapWithKeys(fn (CourseLevel $c) => [$c->value => $c->label()])->toArray())
+                ->required()
+                ->rules(['integer'])
+                ->dehydrateStateUsing(fn ($state) => is_null($state) ? null : (int) $state),
 
             Forms\Components\Select::make('status')
-                ->options(collect(CourseStatus::cases())->mapWithKeys(fn ($c) => [$c->value => $c->name])->toArray())
-                ->required(),
+                ->options(collect(CourseStatus::cases())->mapWithKeys(fn (CourseStatus $c) => [$c->value => $c->label()])->toArray())
+                ->required()
+                ->rules(['integer'])
+                ->dehydrateStateUsing(fn ($state) => is_null($state) ? null : (int) $state),
 
             Forms\Components\TextInput::make('duration_hours')->numeric(),
             Forms\Components\TextInput::make('capacity')->numeric(),
@@ -53,7 +63,25 @@ class CourseResource extends BaseResource
                 ->disk('public')
                 ->directory('courses/covers'),
 
-            Forms\Components\KeyValue::make('meta')->columnSpanFull(),
+            Forms\Components\KeyValue::make('meta')
+                ->columnSpanFull()
+                ->formatStateUsing(function ($state) {
+                    $state = is_array($state) ? $state : [];
+                    return collect($state)->map(function ($v) {
+                        if (is_null($v)) return null;
+                        if (is_scalar($v)) return (string) $v;
+                        return json_encode($v, JSON_UNESCAPED_UNICODE);
+                    })->toArray();
+                })
+                ->dehydrateStateUsing(function ($state) {
+                    $state = is_array($state) ? $state : [];
+                    return collect($state)->map(function ($v) {
+                        if (!is_string($v)) return $v;
+                        $decoded = json_decode($v, true);
+                        return json_last_error() === JSON_ERROR_NONE ? $decoded : $v;
+                    })->toArray();
+                })
+
         ])->columns(2);
     }
 

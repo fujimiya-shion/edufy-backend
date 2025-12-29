@@ -34,9 +34,9 @@ class Course extends Model
     ];
 
     protected $casts = [
-        'level' => CourseLevel::class,
-        'status' => CourseStatus::class,
-        'tuition_fee' => 'decimal:2',
+        // 'level' => CourseLevel::class,
+        // 'status' => CourseStatus::class,
+        'tuition_fee' => 'double',
         'start_date' => 'date',
         'end_date' => 'date',
         'meta' => 'array',
@@ -56,12 +56,12 @@ class Course extends Model
 
     public function schedules(): HasMany
     {
-        return $this->hasMany(CourseSchedule::class);
+        return $this->hasMany(CourseSchedule::class, 'course_id');
     }
 
     public function media(): HasMany
     {
-        return $this->hasMany(CourseMedia::class);
+        return $this->hasMany(CourseMedia::class, 'course_id');
     }
 
     public function lessons(): HasMany

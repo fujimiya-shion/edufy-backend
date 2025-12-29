@@ -59,12 +59,13 @@ trait CrudBehaviour {
 
     public function _show(Request | string | int $request, IService $service, $customOptions = []) {
         try {
-
             $id = (is_numeric($request) || is_string($request))
                 ? (int) $request
                 : (int) $request->route('id');
 
-            $item = $service->getById($id);
+            $item = $customOptions 
+            ? $service->getBy(['id'=> $id], $customOptions)->first()
+            : $service->getById($id);
 
             if ($item) {
                 return $this->successResponse(__('Dữ liệu đã được lấy thành công'), $item);

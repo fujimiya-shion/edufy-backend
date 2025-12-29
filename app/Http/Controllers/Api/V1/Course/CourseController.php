@@ -25,7 +25,7 @@ class CourseController extends ApiController
 
 
     public function show(string $id) {
-        return $this->_show($id, $this->service);
+        return $this->_show($id, $this->service, customOptions: ['with' => ['schedules', 'media', 'lessons']]);
     }
 
     
@@ -35,5 +35,13 @@ class CourseController extends ApiController
 
     public function destroy(string $id) {
         return $this->_destroy($id, $this->service);
+    }
+
+    public function filter(Request $request) {
+        $filters = $request->only(['keyword', 'training_center_id', 'level', 'status', 'min_fee', 'max_fee', 'teacher_id', 'has_media', 'sort']);
+        $data = $this->service->filter($filters);
+        $total = $this->service->filterCount($filters);
+        $meta = $this->makePagination($request, $total);
+        return $this->successResponse("Tìm kiếm thông tin", $data, 200, $meta);
     }
 }
