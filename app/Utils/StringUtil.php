@@ -1,5 +1,7 @@
 <?php
 namespace App\Utils;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Str;
 
 class StringUtil
@@ -27,5 +29,19 @@ class StringUtil
 
     public static function uuid(): string {
         return (string) Str::uuid();
+    }
+
+    public static function genToken(): string {
+        $raw = Str::random(60); // random 
+        return hash('sha256', $raw);
+    }
+
+    public static function getUserToken(Request $request): string|null {
+        $authorization = $request->header('User-Authorization');
+        if(str_starts_with($authorization, 'Bearer ')) {
+            $token = str_replace('Bearer ', '', $authorization);
+            return $token;
+        }
+        return null;
     }
 }

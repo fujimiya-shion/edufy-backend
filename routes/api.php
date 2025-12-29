@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Auth\UserAuthController;
 use App\Http\Controllers\Api\V1\Course\CourseController;
 use App\Http\Controllers\Api\V1\Course\CourseMediaController;
 use App\Http\Controllers\Api\V1\Course\CourseScheduleController;
@@ -109,7 +110,7 @@ Route::prefix('/api/v1')->middleware(['auth:sanctum'])->group(function () {
         ->names('payment-logs')
         ->only(['index', 'show']);
 
-    Route::prefix('/auth/user')->group(function () {
+    Route::prefix('/auth/user')->withoutMiddleware('auth:sanctum')->group(function () {
         Route::post('/register', [UserAuthController::class, 'register']);
         Route::post('/login', [UserAuthController::class, 'login']);
         Route::post('/forgot-password', [UserAuthController::class, 'forgotPassword']);

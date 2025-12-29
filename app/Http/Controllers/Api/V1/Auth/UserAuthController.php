@@ -272,7 +272,7 @@ class UserAuthController extends ApiController
         //     'email' => $data['email'],
         // ]) > 0;
 
-        $existsUser = $this->service->getBy(['email' => $data['email']])->first();
+        $existsUser = $this->service->getBy(['email' => $data['email'], 'password' => ['!=', null]])->first();
         $exists = $existsUser ? true : false;
         $fullName = $existsUser ? $existsUser->full_name : null;
 
@@ -443,7 +443,6 @@ class UserAuthController extends ApiController
      * )
      */
     public function google(Request $request) {
-
         \Firebase\JWT\JWT::$leeway = 60; // FIX LỖI iat prior to, cho phép lệch vài giây
 
         $idToken = $request->id_token;
@@ -477,7 +476,7 @@ class UserAuthController extends ApiController
                 }
 
                 DB::commit();
-                $user->load(['city', 'company.city']);
+
                 return $this->success('Đăng nhập bằng Google thành công', [
                     'token' => $token,
                     'user'  => $user,
@@ -487,14 +486,13 @@ class UserAuthController extends ApiController
             $token = StringUtil::genToken();
             $user = $this->service->create([
                 'email'             => $email,
-                'full_name'         => $name,
+                'name'         => $name,
                 'avatar_url'        => $avatar,
                 'email_verified_at' => $emailVerified ? Carbon::now() : null,
                 'token'             => $token,
             ]);
 
             DB::commit();
-            $user->load(['city', 'company.city']);
 
             return $this->success('Đăng nhập bằng Google thành công', [
                 'token' => $token,

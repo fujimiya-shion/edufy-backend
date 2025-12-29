@@ -163,7 +163,10 @@ abstract class Repository implements IRepository
 
         $query = $this->model;
         foreach ($criteria as $key => $value) {
-            $query = $query->where($key, $value);
+            if(!is_array($value))
+                $query = $query->where($key, $value);
+            else
+                $query = $query->where($key, $value[0], $value[1]);
         }
         $data = $this->handleQueryOption($query, $options);
         if ($this instanceof ShouldCache) {
