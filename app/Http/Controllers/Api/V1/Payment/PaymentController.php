@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Payment;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Dtos\Payment\PaymentCreateIntentRequest;
 use App\Services\Contracts\Payment\IPaymentService;
 use App\Traits\CrudBehaviour;
 use Illuminate\Http\Request;
@@ -44,10 +45,15 @@ class PaymentController extends ApiController
         return $this->_destroy($id, $this->service);
     }
 
-    public function createIntent(Request $request)
-    {
-        $userId = (int) $request->user()->id;
-        return $this->_store($request, $this->service, ['user_id' => $userId], isMerge: true);
+    public function createIntent(Request $request) {
+        try {
+            $intent = PaymentCreateIntentRequest::fromRequest($request);
+            $response = $this->service->createIntent($intent);
+            return $this->success("Create intent successfully", $response);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return $this->error("Something went wrong!!", 500);
+        }
     }
 
     public function confirm(Request $request)

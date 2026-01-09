@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\Order\OrderController;
 use App\Http\Controllers\Api\V1\Order\OrderItemController;
 use App\Http\Controllers\Api\V1\Payment\PaymentController;
 use App\Http\Controllers\Api\V1\Payment\PaymentLogController;
+use App\Http\Middleware\VerifyUserToken;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('/api/v1')->group(function () {
@@ -67,7 +68,7 @@ Route::prefix('/api/v1')->group(function () {
         ->except(['create', 'edit']);
 });
 
-Route::prefix('/api/v1')->middleware(['auth:sanctum'])->group(function () {
+Route::prefix('/api/v1')->middleware(VerifyUserToken::class)->group(function () {
     Route::apiResource('/carts', CartController::class)
         ->names('carts')
         ->except(['create', 'edit']);
@@ -103,14 +104,14 @@ Route::prefix('/api/v1')->middleware(['auth:sanctum'])->group(function () {
     Route::prefix('/payments')->group(function () {
         Route::post('/create-intent', [PaymentController::class, 'createIntent'])->name('payments.create-intent');
         Route::post('/confirm', [PaymentController::class, 'confirm'])->name('payments.confirm');
-        Route::post('/webhook', [PaymentController::class, 'webhook'])->withoutMiddleware('auth:sanctum')->name('payments.webhook');
+        Route::post('/webhook', [PaymentController::class, 'webhook'])->withoutMiddleware(VerifyUserToken::class)->name('payments.webhook');
     });
 
     Route::apiResource('/payment-logs', PaymentLogController::class)
         ->names('payment-logs')
         ->only(['index', 'show']);
 
-    Route::prefix('/auth/user')->withoutMiddleware('auth:sanctum')->group(function () {
+    Route::prefix('/auth/user')->withoutMiddleware(VerifyUserToken::class)->group(function () {
         Route::post('/register', [UserAuthController::class, 'register']);
         Route::post('/login', [UserAuthController::class, 'login']);
         Route::post('/forgot-password', [UserAuthController::class, 'forgotPassword']);
@@ -122,6 +123,6 @@ Route::prefix('/api/v1')->middleware(['auth:sanctum'])->group(function () {
         // Socials
         Route::post('/google', [UserAuthController::class, 'google']);
 
-        Route::middleware('auth:user')->get('/me', [UserAuthController::class, 'me']);
+        Route::middleware(VerifyUserToken::class)->get('/me', [UserAuthController::class, 'me']);
     });
 });

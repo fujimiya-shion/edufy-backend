@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Infra\Payment\PaymentGatewayFactory;
+use App\Infra\Payment\StripePaymentGateway;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

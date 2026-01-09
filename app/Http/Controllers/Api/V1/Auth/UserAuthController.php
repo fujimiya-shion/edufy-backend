@@ -222,7 +222,7 @@ class UserAuthController extends ApiController
     {
         $token = StringUtil::getUserToken($request);
         $user = $this->service->getBy(['token' => $token], [
-            "with" => ['city', 'company.city', 'profiles:id,name,user_id,profile_type', 'producerOccupation']
+            
         ])->first();
 
         if (!$user) {
